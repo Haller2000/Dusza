@@ -10,6 +10,20 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{% url 'users:role-selection' %}">🏰 Damareen</a>
+            <div class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
+                    <span class="navbar-text me-3">
+                        Üdv, <strong>{{ user.email }}</strong>
+                        <span class="badge {% if user.role == 'gamemaster' %}bg-warning{% else %}bg-info{% endif %}">
+                            {{ user.get_role_display }}
+                        </span>
+                    </span>
+                    <a class="nav-link" href="{% url 'users:logout' %}">🚪 Kijelentkezés</a>
+                {% else %}
+                    <a class="nav-link" href="{% url 'users:login' %}">🔐 Bejelentkezés</a>
+                    <a class="nav-link" href="{% url 'users:register' %}">📝 Regisztráció</a>
+                {% endif %}
+            </div>
         </div>
     </nav>
 
@@ -29,27 +43,46 @@
                     <h1 class="display-4">🏰 Damareen</h1>
                     <p class="lead">A gyűjtögetős fantasy kártyajáték</p>
                     
-                    <div class="row mt-5">
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">🎮 Játékos</h5>
-                                    <p class="card-text flex-grow-1">Küzdj meg kazamatákkal, gyűjts kártyákat és fejleszd hőseidet!</p>
-                                    <a href="{% url 'users:player-login' %}" class="btn btn-primary btn-lg mt-auto">Játékosként játszom</a>
+                    {% if user.is_authenticated %}
+                        <!-- Ha be van jelentkezve -->
+                        <div class="mt-5">
+                            <h3>Üdvözöllek, {{ user.email }}!</h3>
+                            <p class="mb-4">Szerepkör: <strong>{{ user.get_role_display }}</strong></p>
+                            
+                            {% if user.role == 'gamemaster' %}
+                                <a href="{% url 'cards:card-list' %}" class="btn btn-primary btn-lg">🎴 Kártya Kezelés</a>
+                            {% else %}
+                                <a href="{% url 'game:game-home' %}" class="btn btn-primary btn-lg">🎮 Játék Indítása</a>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <!-- Ha nincs bejelentkezve -->
+                        <div class="row mt-5">
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">🎮 Játékos</h5>
+                                        <p class="card-text flex-grow-1">Küzdj meg kazamatákkal, gyűjts kártyákat és fejleszd hőseidet!</p>
+                                        <a href="{% url 'users:login' %}" class="btn btn-primary btn-lg mt-auto">Bejelentkezés játékosként</a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">👑 Játékmester</h5>
+                                        <p class="card-text flex-grow-1">Világot alkoss, kazamatákat építs és kártyákat készíts!</p>
+                                        <a href="{% url 'users:login' %}" class="btn btn-outline-primary btn-lg mt-auto">Bejelentkezés játékmesterként</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="col-md-6 mb-4">
-                            <div class="card h-100">
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">👑 Játékmester</h5>
-                                    <p class="card-text flex-grow-1">Világot alkoss, kazamatákat építs és kártyákat készíts!</p>
-                                    <a href="{% url 'users:gamemaster-login' %}" class="btn btn-outline-primary btn-lg mt-auto">Játékmesterként</a>
-                                </div>
-                            </div>
+                        <div class="mt-4">
+                            <p>Még nincs fiókod? <a href="{% url 'users:register' %}">Regisztrálj most!</a></p>
                         </div>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
