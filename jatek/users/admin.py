@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import Player
 
-# Register your models here.
+# LEGEGYSZERŰBB MEGOLDÁS - csak regisztráld a modellt
+admin.site.register(Player)

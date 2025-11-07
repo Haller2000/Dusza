@@ -1,23 +1,20 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-class Player(models.Model):
+class Player(AbstractUser):
     ROLE_CHOICES = [
         ('player', 'Játékos'),
         ('gamemaster', 'Játékmester'),
     ]
     
-    name = models.CharField(max_length=50, unique=True)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
-    created_at = models.DateTimeField(auto_now_add=True)
-    last_login = models.DateTimeField(auto_now=True)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='player')
     games_played = models.IntegerField(default=0)
     games_won = models.IntegerField(default=0)
     
-    @property
-    def win_rate(self):
-        if self.games_played == 0:
-            return 0
-        return round((self.games_won / self.games_played) * 100, 1)
+    email = models.EmailField(unique=True)
+    
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
     
     def __str__(self):
-        return f"{self.name} ({self.get_role_display()})"
+        return f"{self.email} ({self.get_role_display()})"
