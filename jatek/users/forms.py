@@ -3,38 +3,19 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Player
 
 class PlayerRegistrationForm(UserCreationForm):
-    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'email@pelda.hu'
-    }))
-    role = forms.ChoiceField(choices=Player.ROLE_CHOICES, widget=forms.Select(attrs={
-        'class': 'form-control'
-    }))
+    email = forms.EmailField(required=True)
     
     class Meta:
         model = Player
-        fields = ['email', 'username', 'role', 'password1', 'password2']
-        widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Becenév'}),
-        }
+        fields = ['username', 'email', 'password1', 'password2', 'role']
     
-        def save(self, commit=True):
-            user = super().save(commit=False)
-            user.email = self.cleaned_data['email']
-            user.role = self.cleaned_data['role']
-            if commit:
-                user.save()
-            return user
-    
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+        return user
+
 class PlayerLoginForm(forms.Form):
-    email = forms.EmailField(widget=forms.EmailInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'email@pelda.hu'
-    }))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'Jelszó'
-    }))
-    role = forms.ChoiceField(choices=Player.ROLE_CHOICES, widget=forms.Select(attrs={
-        'class': 'form-control'
-    }))
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)

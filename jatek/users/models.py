@@ -8,9 +8,6 @@ class Player(AbstractUser):
     ]
     
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='player')
-    games_played = models.IntegerField(default=0)
-    games_won = models.IntegerField(default=0)
-    
     email = models.EmailField(unique=True)
     
     USERNAME_FIELD = 'email'
