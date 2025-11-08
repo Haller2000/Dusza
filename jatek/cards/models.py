@@ -65,8 +65,6 @@ class DungeonCard(models.Model):
     world_card = models.ForeignKey(WorldCard, on_delete=models.CASCADE)
 
 
-    def __str__(self):
-        return self.name
      
 class DungeonDeck(models.Model):
     dungeon = models.ForeignKey(Dungeon, on_delete=models.CASCADE, related_name='decks')
