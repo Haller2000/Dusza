@@ -1,5 +1,5 @@
 from django.db import models
-from .models import WorldCard, Dungeon, PlayerDeck, PlayerCards, Battle
+from .models import DungeonDeck, WorldCard, Dungeon, PlayerDeck, PlayerCards, Battle
 
 class CardService:
     @staticmethod
@@ -25,3 +25,12 @@ class CardService:
             return WorldCard.objects.get(id=card_id)
         except WorldCard.DoesNotExist:
             return None
+        
+    @staticmethod
+    def get_dungeon_deck_cards(dungeon):
+        try:
+            dungeon_deck = DungeonDeck.objects.get(dungeon=dungeon)
+            return dungeon_deck.cards.all()
+        except DungeonDeck.DoesNotExist:
+            return None
+    

@@ -57,16 +57,24 @@ class Dungeon(models.Model):
     
     def __str__(self):
         return self.name
+    
 
 #enemy cards in dungeon
 class DungeonCard(models.Model):
     dungeon = models.ForeignKey(Dungeon, on_delete=models.CASCADE, related_name='dungeon_cards')
     world_card = models.ForeignKey(WorldCard, on_delete=models.CASCADE)
-    order = models.IntegerField()
+
+
+    def __str__(self):
+        return self.name
+     
+class DungeonDeck(models.Model):
+    dungeon = models.ForeignKey(Dungeon, on_delete=models.CASCADE, related_name='decks')
+    name = models.CharField(max_length=100)
+    cards = models.QuerySet(DungeonCard)
+    leader_card = models.ForeignKey(LeaderCard, on_delete=models.CASCADE)
+
     
-    class Meta:
-        ordering = ['order']
-        unique_together = ['dungeon', 'order']
 
 class PlayerCards(models.Model):
 
@@ -103,14 +111,13 @@ class PlayerDeck(models.Model):
     player = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='decks')
     name = models.CharField(max_length=100)
     is_active = models.BooleanField(default=False)
+    cards = models.QuerySet(PlayerCards)
     
     def save(self, *args, **kwargs):
         if self.is_active:
             PlayerDeck.objects.filter(player=self.player, is_active=True).update(is_active=False)
         super().save(*args, **kwargs)
     
-    def __str__(self):
-        return f"{self.name} ({self.player.email})"
 
 
 class Battle(models.Model):
