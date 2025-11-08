@@ -18,7 +18,10 @@ def role_selection(request):
         elif role == 'jatekosmester':
             return redirect('gamemaster_login')  
     
-    return render(request, 'users/role_selection.html')
+    return render(request, 'users/role_selection.html', {
+        "role":role
+        
+    })
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
