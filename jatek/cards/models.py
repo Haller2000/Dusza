@@ -71,7 +71,7 @@ class DungeonCard(models.Model):
 class DungeonDeck(models.Model):
     dungeon = models.ForeignKey(Dungeon, on_delete=models.CASCADE, related_name='decks')
     name = models.CharField(max_length=100)
-    cards = models.QuerySet(DungeonCard)
+    cards = models.ManyToManyField(DungeonCard)
     leader_card = models.ForeignKey(LeaderCard, on_delete=models.CASCADE)
 
     
@@ -111,7 +111,7 @@ class PlayerDeck(models.Model):
     player = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='decks')
     name = models.CharField(max_length=100)
     is_active = models.BooleanField(default=False)
-    cards = models.QuerySet(PlayerCards)
+    cards = models.ManyToManyField(PlayerCards)
     
     def save(self, *args, **kwargs):
         if self.is_active:
