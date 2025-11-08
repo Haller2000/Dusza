@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
-from django.http import JsonResponse
 from .models import WorldCard, LeaderCard, Dungeon, PlayerCards
 from .forms import WorldCardForm, LeaderCardForm
+from .services import CardService
 
 def is_game_master(user):
     """Ellenőrzi, hogy a felhasználó játékmester-e"""
@@ -191,54 +191,32 @@ def create_dungeon(request):
     return redirect('dungeon_management')
 
 
-# Egyszerű API végpontok (ha később szükséges)
-def api_world_cards(request):
-    """JSON API világkártyákhoz"""
-    cards = WorldCard.objects.all()
-    data = {
-        'world_cards': [
-            {
-                'id': card.id,
-                'name': card.name,
-                'damage': card.base_damage,
-                'health': card.base_health,
-                'type': card.card_type,
-                'type_display': card.get_card_type_display()
-            }
-            for card in cards
-        ]
-    }
-    return JsonResponse(data)
-
-def api_leader_cards(request):
-    """JSON API vezérkártyákhoz"""
-    cards = LeaderCard.objects.all()
-    data = {
-        'leader_cards': [
-            {
-                'id': card.id,
-                'name': card.name,
-                'base_card': card.base_card.name,
-                'damage': card.damage,
-                'health': card.health,
-                'type': card.card_type,
-                'is_damage_doubled': card.is_damage_doubled,
-                'is_health_doubled': card.is_health_doubled
-            }
-            for card in cards
-        ]
-    }
-    return JsonResponse(data)
-
 @login_required
 def card_selector(request):
     """Kártyaválasztó oldal a játékosok számára"""
     player = request.user
-    player_collection = PlayerCards.objects.filter(player=player).select_related('world_card')
     
-    context = {
-        'player_collection': player_collection,
-    }
+    all_world_cards = WorldCard.objects.all()
     
-    return render(request, 'cards/card_selector.html', context)
+    return render(request, 'cards/card_selector.html', {
+        'all_cards': all_world_cards,
+    })
 
+def save_selected_cards(request):
+    if request.method == 'POST':
+        selected_card_ids = request.POST.getlist('selected_cards')
+        
+        selected_card_ids = [int(card_id) for card_id in selected_card_ids]
+        
+        # PlayerCards létrehozása a kiválasztott kártyákból
+        for card_id in selected_card_ids:
+            world_card = CardService.get_card_by_id(card_id)
+            PlayerCards.objects.get_or_create(
+                player=request.user,
+                world_card=world_card,
+                defaults={'extra_damage': 0, 'extra_health': 0}
+            )
+        
+        return redirect('dashboard')  # Átirányítás 
+    
+    return redirect('select_cards')

@@ -1,10 +1,10 @@
 from django.db import models
-from .models import WorldCard, Dungeon, PlayerDeck, PlayerCardStats, Battle
+from .models import WorldCard, Dungeon, PlayerDeck, PlayerCards, Battle
 
 class CardService:
     @staticmethod
     def get_player_collection(user):
-        return PlayerCardStats.objects.filter(player=user).select_related('world_card')
+        return PlayerCards.objects.filter(player=user).select_related('world_card')
     
     @staticmethod
     def get_available_dungeons_for_deck(deck):
@@ -18,4 +18,10 @@ class CardService:
         try:
             return PlayerDeck.objects.get(player=user, is_active=True)
         except PlayerDeck.DoesNotExist:
+            return None
+        
+    def get_card_by_id(card_id):
+        try:
+            return WorldCard.objects.get(id=card_id)
+        except WorldCard.DoesNotExist:
             return None

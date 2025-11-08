@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     # Fő kártya készítő oldal
     path('card-creator/', views.card_creator, name='card_creator'),
+    path('card-selector/', views.card_selector, name='card_selector'),
 
 
     path('create-world-card/', views.create_world_card, name='create_world_card'),
@@ -16,8 +17,4 @@ urlpatterns = [
 
     path('dungeons/', views.dungeon_management, name='dungeon_management'),
     path('create-dungeon/', views.create_dungeon, name='create_dungeon'),
-
-
-    path('api/world-cards/', views.api_world_cards, name='api_world_cards'),
-    path('api/leader-cards/', views.api_leader_cards, name='api_leader_cards'),
 ]
