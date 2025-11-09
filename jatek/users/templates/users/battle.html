@@ -34,7 +34,7 @@
 
   <script>
     function endBattle() {
-        // Töröljük a localStorage-ból a harc adatait
+
         localStorage.removeItem('playerBattleCards');
         localStorage.removeItem('enemyBattleCards');
         localStorage.removeItem('enemyLeaderCard');
@@ -43,7 +43,6 @@
         window.location.href = 'player_dungeons.html';
     }
 
-    // Betöltéskor indítsuk a harcot
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof simulateBattle === 'function') {
             simulateBattle();

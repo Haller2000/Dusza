@@ -64,7 +64,7 @@ class AddCardToDungeonForm(forms.Form):
         super().__init__(*args, **kwargs)
         
         if dungeon:
-            # Kizárjuk azokat a kártyákat, amelyek már benne vannak a kazamatában
+ 
             existing_card_ids = dungeon.dungeon_cards.values_list('world_card_id', flat=True)
             self.fields['card_id'].queryset = WorldCard.objects.exclude(id__in=existing_card_ids)
 
